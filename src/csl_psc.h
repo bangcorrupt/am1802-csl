@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_PSC_H
-#define HAL_PSC_H
+#ifndef CSL_PSC_H
+#define CSL_PSC_H
 
 #include "hw_psc_AM1808.h"
 

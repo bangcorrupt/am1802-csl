@@ -39,8 +39,8 @@
  *
  */
 
-#ifndef HAL_GPIO_H
-#define HAL_GPIO_H
+#ifndef CSL_GPIO_H
+#define CSL_GPIO_H
 
 #include "hw_gpio.h"
 

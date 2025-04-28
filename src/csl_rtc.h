@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_RTC_H
-#define HAL_RTC_H
+#ifndef CSL_RTC_H
+#define CSL_RTC_H
 
 #include "hw_rtc.h"
 

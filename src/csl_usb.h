@@ -38,8 +38,8 @@
  *
  */
 
-#ifndef HAL_USB_H
-#define HAL_USB_H
+#ifndef CSL_USB_H
+#define CSL_USB_H
 
 //*****************************************************************************
 //

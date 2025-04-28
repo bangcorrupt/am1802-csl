@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_MCASP_H
-#define HAL_MCASP_H
+#ifndef CSL_MCASP_H
+#define CSL_MCASP_H
 
 #include "hw_mcasp.h"
 

@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_EDMA_H
-#define HAL_EDMA_H
+#ifndef CSL_EDMA_H
+#define CSL_EDMA_H
 
 #include "hw_edma3cc.h"
 #include "hw_edma3tc.h"

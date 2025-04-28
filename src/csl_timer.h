@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_TIMER_H
-#define HAL_TIMER_H
+#ifndef CSL_TIMER_H
+#define CSL_TIMER_H
 
 #include "hw_tmr.h"
 #include "soc_AM1808.h"

@@ -37,8 +37,8 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HAL_EVMAM1808_H
-#define HAL_EVMAM1808_H
+#ifndef CSL_EVMAM1808_H
+#define CSL_EVMAM1808_H
 
 #ifdef __cplusplus
 extern "C" {

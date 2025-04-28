@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_CPPI41DMA_H
-#define HAL_CPPI41DMA_H
+#ifndef CSL_CPPI41DMA_H
+#define CSL_CPPI41DMA_H
 
 #ifdef __cplusplus
 extern "C" {

@@ -36,8 +36,8 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HAL_EDMAEVENT_H
-#define HAL_EDMAEVENT_H
+#ifndef CSL_EDMAEVENT_H
+#define CSL_EDMAEVENT_H
 
 #include "hw_types.h"
 

@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_EMIFA_H
-#define HAL_EMIFA_H
+#ifndef CSL_EMIFA_H
+#define CSL_EMIFA_H
 
 #include "hw_emifa2.h"
 

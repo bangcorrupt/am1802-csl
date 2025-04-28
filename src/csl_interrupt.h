@@ -38,8 +38,8 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HAL_INTERRUPT_H
-#define HAL_INTERRUPT_H
+#ifndef CSL_INTERRUPT_H
+#define CSL_INTERRUPT_H
 
 #include "hw_types.h"
 

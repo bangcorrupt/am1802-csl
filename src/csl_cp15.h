@@ -38,8 +38,8 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HAL_CP15_H
-#define HAL_CP15_H
+#ifndef CSL_CP15_H
+#define CSL_CP15_H
 
 #ifdef __cplusplus
 extern "C" {

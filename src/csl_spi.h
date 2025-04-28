@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_SPI_H
-#define HAL_SPI_H
+#ifndef CSL_SPI_H
+#define CSL_SPI_H
 
 #include "hw_spi.h"
 

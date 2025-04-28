@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_WDT_H
-#define HAL_WDT_H
+#ifndef CSL_WDT_H
+#define CSL_WDT_H
 
 #include "hw_watchdog.h"
 

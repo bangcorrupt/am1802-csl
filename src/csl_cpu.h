@@ -38,8 +38,8 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HAL_CPU_H
-#define HAL_CPU_H
+#ifndef CSL_CPU_H
+#define CSL_CPU_H
 
 #ifdef __cplusplus
 extern "C" {

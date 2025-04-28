@@ -40,8 +40,8 @@
  *
  */
 
-#ifndef HAL_UART_H
-#define HAL_UART_H
+#ifndef CSL_UART_H
+#define CSL_UART_H
 
 #include "hw_uart.h"
 

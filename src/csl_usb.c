@@ -100,10 +100,10 @@ static void USBIndexWrite(unsigned int ulBase, unsigned int ulEndpoint,
     ASSERT((ulSize == 1) || (ulSize == 2));
 
     /* Save the old index in case it was in use. */
-    ulIndex = HWREGB(ulBase + USB_O_EPIDX);
+    ulIndex = HWREGB(ulBase + USB_0_EPIDX);
 
     /* Set the index. */
-    HWREGB(ulBase + USB_O_EPIDX) = ulEndpoint;
+    HWREGB(ulBase + USB_0_EPIDX) = ulEndpoint;
 
     /* Determine the size of the register value. */
     if (ulSize == 1) {
@@ -115,7 +115,7 @@ static void USBIndexWrite(unsigned int ulBase, unsigned int ulEndpoint,
     }
 
     /* Restore the old index in case it was in use. */
-    HWREGB(ulBase + USB_O_EPIDX) = ulIndex;
+    HWREGB(ulBase + USB_0_EPIDX) = ulIndex;
 }
 
 /**
@@ -144,10 +144,10 @@ static unsigned int USBIndexRead(unsigned int ulBase, unsigned int ulEndpoint,
     ASSERT((ulSize == 1) || (ulSize == 2));
 
     /* Save the old index in case it was in use. */
-    ulIndex = HWREGB(ulBase + USB_O_EPIDX);
+    ulIndex = HWREGB(ulBase + USB_0_EPIDX);
 
     /* Set the index. */
-    HWREGB(ulBase + USB_O_EPIDX) = ulEndpoint;
+    HWREGB(ulBase + USB_0_EPIDX) = ulEndpoint;
 
     /* Determine the size of the register value. */
     if (ulSize == 1) {
@@ -159,7 +159,7 @@ static unsigned int USBIndexRead(unsigned int ulBase, unsigned int ulEndpoint,
     }
 
     /* Restore the old index in case it was in use. */
-    HWREGB(ulBase + USB_O_EPIDX) = ulIndex;
+    HWREGB(ulBase + USB_0_EPIDX) = ulIndex;
 
     /* Return the register's value. */
     return (ulValue);
@@ -182,7 +182,7 @@ void USBHostSuspend(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Send the suspend signaling to the USB bus. */
-    HWREGB(ulBase + USB_O_POWER) |= USB_POWER_SUSPEND;
+    HWREGB(ulBase + USB_0_POWER) |= USB_POWER_SUSPEND;
 }
 
 /**
@@ -207,9 +207,9 @@ void USBHostReset(unsigned int ulBase, tBoolean bStart) {
 
     /* Send a reset signal to the bus. */
     if (bStart) {
-        HWREGB(ulBase + USB_O_POWER) |= USB_POWER_RESET;
+        HWREGB(ulBase + USB_0_POWER) |= USB_POWER_RESET;
     } else {
-        HWREGB(ulBase + USB_O_POWER) &= ~USB_POWER_RESET;
+        HWREGB(ulBase + USB_0_POWER) &= ~USB_POWER_RESET;
     }
 }
 
@@ -241,9 +241,9 @@ void USBHostResume(unsigned int ulBase, tBoolean bStart) {
 
     /* Send a resume signal to the bus. */
     if (bStart) {
-        HWREGB(ulBase + USB_O_POWER) |= USB_POWER_RESUME;
+        HWREGB(ulBase + USB_0_POWER) |= USB_POWER_RESUME;
     } else {
-        HWREGB(ulBase + USB_O_POWER) &= ~USB_POWER_RESUME;
+        HWREGB(ulBase + USB_0_POWER) &= ~USB_POWER_RESUME;
     }
 }
 
@@ -264,12 +264,12 @@ unsigned int USBHostSpeedGet(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* If the Full Speed device bit is set, then this is a full speed device. */
-    if (HWREGB(ulBase + USB_O_DEVCTL) & USB_DEVCTL_FSDEV) {
+    if (HWREGB(ulBase + USB_0_DEVCTL) & USB_DEVCTL_FSDEV) {
         return (USB_FULL_SPEED);
     }
 
     /* If the Low Speed device bit is set, then this is a low speed device. */
-    if (HWREGB(ulBase + USB_O_DEVCTL) & USB_DEVCTL_LSDEV) {
+    if (HWREGB(ulBase + USB_0_DEVCTL) & USB_DEVCTL_LSDEV) {
         return (USB_LOW_SPEED);
     }
 
@@ -307,31 +307,31 @@ unsigned int USBIntStatus(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Get the transmit interrupt status. */
-    ulStatus = (HWREGB(ulBase + USB_O_TXIS));
+    ulStatus = (HWREGB(ulBase + USB_0_TXIS));
 
     /* Get the receive interrupt status, these bits go into the second byte of
      * the returned value. */
-    ulStatus |= (HWREGB(ulBase + USB_O_RXIS) << USB_INT_RX_SHIFT);
+    ulStatus |= (HWREGB(ulBase + USB_0_RXIS) << USB_INT_RX_SHIFT);
 
     /* Get the general interrupt status, these bits go into the upper 8 bits
      * of the returned value. */
-    ulStatus |= (HWREGB(ulBase + USB_O_IS) << USB_INT_STATUS_SHIFT);
+    ulStatus |= (HWREGB(ulBase + USB_0_IS) << USB_INT_STATUS_SHIFT);
 
     /* Add the power fault status. */
-    if (HWREG(ulBase + USB_O_EPCISC) & USB_EPCISC_PF) {
+    if (HWREG(ulBase + USB_0_EPCISC) & USB_EPCISC_PF) {
         /* Indicate a power fault was detected. */
         ulStatus |= USB_INT_POWER_FAULT;
 
         /* Clear the power fault interrupt. */
-        HWREGB(ulBase + USB_O_EPCISC) |= USB_EPCISC_PF;
+        HWREGB(ulBase + USB_0_EPCISC) |= USB_EPCISC_PF;
     }
 
-    if (HWREG(USB0_BASE + USB_O_IDVISC) & USB_IDVRIS_ID) {
+    if (HWREG(USB0_BASE + USB_0_IDVISC) & USB_IDVRIS_ID) {
         /* Indicate a id detection was detected. */
         ulStatus |= USB_INT_MODE_DETECT;
 
         /* Clear the id detection interrupt. */
-        HWREG(USB0_BASE + USB_O_IDVISC) |= USB_IDVRIS_ID;
+        HWREG(USB0_BASE + USB_0_IDVISC) |= USB_IDVRIS_ID;
     }
 
     /* Return the combined interrupt status. */
@@ -367,14 +367,14 @@ void USBIntDisable(unsigned int ulBase, unsigned int ulFlags) {
     /* If any transmit interrupts were disabled then write the transmit
      * interrupt settings out to the hardware. */
     if (ulFlags & (USB_INT_HOST_OUT | USB_INT_DEV_IN | USB_INT_EP0)) {
-        HWREGH(ulBase + USB_O_TXIE) &=
+        HWREGH(ulBase + USB_0_TXIE) &=
             ~(ulFlags & (USB_INT_HOST_OUT | USB_INT_DEV_IN | USB_INT_EP0));
     }
 
     /* If any receive interrupts were disabled then write the receive interrupt
      * settings out to the hardware. */
     if (ulFlags & (USB_INT_HOST_IN | USB_INT_DEV_OUT)) {
-        HWREGH(ulBase + USB_O_RXIE) &=
+        HWREGH(ulBase + USB_0_RXIE) &=
             ~((ulFlags & (USB_INT_HOST_IN | USB_INT_DEV_OUT)) >>
               USB_INT_RX_SHIFT);
     }
@@ -382,18 +382,18 @@ void USBIntDisable(unsigned int ulBase, unsigned int ulFlags) {
     /* If any general interrupts were disabled then write the general interrupt
      * settings out to the hardware. */
     if (ulFlags & USB_INT_STATUS) {
-        HWREGB(ulBase + USB_O_IE) &=
+        HWREGB(ulBase + USB_0_IE) &=
             ~((ulFlags & USB_INT_STATUS) >> USB_INT_STATUS_SHIFT);
     }
 
     /* Disable the power fault interrupt. */
     if (ulFlags & USB_INT_POWER_FAULT) {
-        HWREG(ulBase + USB_O_EPCIM) = 0;
+        HWREG(ulBase + USB_0_EPCIM) = 0;
     }
 
     /* Disable the ID pin detect interrupt. */
     if (ulFlags & USB_INT_MODE_DETECT) {
-        HWREG(USB0_BASE + USB_O_IDVIM) = 0;
+        HWREG(USB0_BASE + USB_0_IDVIM) = 0;
     }
 }
 #endif
@@ -433,14 +433,14 @@ void USBIntEnable(unsigned int ulBase, unsigned int ulFlags) {
     /* If any transmit interrupts were enabled then write the transmit
      * interrupt settings out to the hardware. */
     if (ulFlags & (USB_INT_HOST_OUT | USB_INT_DEV_IN | USB_INT_EP0)) {
-        HWREGH(ulBase + USB_O_TXIE) |=
+        HWREGH(ulBase + USB_0_TXIE) |=
             ulFlags & (USB_INT_HOST_OUT | USB_INT_DEV_IN | USB_INT_EP0);
     }
 
     /* If any receive interrupts were enabled then write the receive interrupt
      * settings out to the hardware. */
     if (ulFlags & (USB_INT_HOST_IN | USB_INT_DEV_OUT)) {
-        HWREGH(ulBase + USB_O_RXIE) |=
+        HWREGH(ulBase + USB_0_RXIE) |=
             ((ulFlags & (USB_INT_HOST_IN | USB_INT_DEV_OUT)) >>
              USB_INT_RX_SHIFT);
     }
@@ -448,18 +448,18 @@ void USBIntEnable(unsigned int ulBase, unsigned int ulFlags) {
     /* If any general interrupts were enabled then write the general interrupt
      * settings out to the hardware. */
     if (ulFlags & USB_INT_STATUS) {
-        HWREGB(ulBase + USB_O_IE) |=
+        HWREGB(ulBase + USB_0_IE) |=
             (ulFlags & USB_INT_STATUS) >> USB_INT_STATUS_SHIFT;
     }
 
     /* Enable the power fault interrupt. */
     if (ulFlags & USB_INT_POWER_FAULT) {
-        HWREG(ulBase + USB_O_EPCIM) = USB_EPCIM_PF;
+        HWREG(ulBase + USB_0_EPCIM) = USB_EPCIM_PF;
     }
 
     /* Enable the ID pin detect interrupt. */
     if (ulFlags & USB_INT_MODE_DETECT) {
-        HWREG(USB0_BASE + USB_O_IDVIM) = USB_IDVIM_ID;
+        HWREG(USB0_BASE + USB_0_IDVIM) = USB_IDVIM_ID;
     }
 }
 #endif
@@ -486,17 +486,17 @@ void USBIntDisableControl(unsigned int ulBase, unsigned int ulFlags) {
     /* If any general interrupts were disabled then write the general interrupt
      * settings out to the hardware. */
     if (ulFlags & USB_INTCTRL_STATUS) {
-        HWREGB(ulBase + USB_O_IE) &= ~(ulFlags & USB_INTCTRL_STATUS);
+        HWREGB(ulBase + USB_0_IE) &= ~(ulFlags & USB_INTCTRL_STATUS);
     }
 
     /* Disable the power fault interrupt. */
     if (ulFlags & USB_INTCTRL_POWER_FAULT) {
-        HWREG(ulBase + USB_O_EPCIM) = 0;
+        HWREG(ulBase + USB_0_EPCIM) = 0;
     }
 
     /* Disable the ID pin detect interrupt. */
     if (ulFlags & USB_INTCTRL_MODE_DETECT) {
-        HWREG(USB0_BASE + USB_O_IDVIM) = 0;
+        HWREG(USB0_BASE + USB_0_IDVIM) = 0;
     }
 }
 
@@ -522,17 +522,17 @@ void USBIntEnableControl(unsigned int ulBase, unsigned int ulFlags) {
     /* If any general interrupts were enabled then write the general interrupt
      * settings out to the hardware. */
     if (ulFlags & USB_INTCTRL_STATUS) {
-        HWREGB(ulBase + USB_O_IE) |= ulFlags;
+        HWREGB(ulBase + USB_0_IE) |= ulFlags;
     }
 
     /* Enable the power fault interrupt. */
     if (ulFlags & USB_INTCTRL_POWER_FAULT) {
-        HWREG(ulBase + USB_O_EPCIM) = USB_EPCIM_PF;
+        HWREG(ulBase + USB_0_EPCIM) = USB_EPCIM_PF;
     }
 
     /* Enable the ID pin detect interrupt. */
     if (ulFlags & USB_INTCTRL_MODE_DETECT) {
-        HWREG(USB0_BASE + USB_O_IDVIM) = USB_IDVIM_ID;
+        HWREG(USB0_BASE + USB_0_IDVIM) = USB_IDVIM_ID;
     }
 }
 
@@ -588,20 +588,20 @@ unsigned int USBIntStatusControl(unsigned int ulBase) {
     /*ulStatus = HWREGB(USB_0_OTGBASE + USB_0_GENR_INTR); */
 
     /* Add the power fault status. */
-    if (HWREG(ulBase + USB_O_EPCISC) & USB_EPCISC_PF) {
+    if (HWREG(ulBase + USB_0_EPCISC) & USB_EPCISC_PF) {
         /* Indicate a power fault was detected. */
         ulStatus |= USB_INTCTRL_POWER_FAULT;
 
         /* Clear the power fault interrupt. */
-        HWREGB(ulBase + USB_O_EPCISC) |= USB_EPCISC_PF;
+        HWREGB(ulBase + USB_0_EPCISC) |= USB_EPCISC_PF;
     }
 
-    if (HWREG(USB0_BASE + USB_O_IDVISC) & USB_IDVRIS_ID) {
+    if (HWREG(USB0_BASE + USB_0_IDVISC) & USB_IDVRIS_ID) {
         /* Indicate a id detection was detected. */
         ulStatus |= USB_INTCTRL_MODE_DETECT;
 
         /* Clear the id detection interrupt. */
-        HWREG(USB0_BASE + USB_O_IDVISC) |= USB_IDVRIS_ID;
+        HWREG(USB0_BASE + USB_0_IDVISC) |= USB_IDVRIS_ID;
     }
 
     /* Return the combined interrupt status. */
@@ -628,12 +628,12 @@ void USBIntDisableEndpoint(unsigned int ulBase, unsigned int ulFlags) {
 
     /* If any transmit interrupts were disabled then write the transmit
      * interrupt settings out to the hardware. */
-    HWREGH(ulBase + USB_O_TXIE) &=
+    HWREGH(ulBase + USB_0_TXIE) &=
         ~(ulFlags & (USB_INTEP_HOST_OUT | USB_INTEP_DEV_IN | USB_INTEP_0));
 
     /* If any receive interrupts were disabled then write the receive interrupt
      * settings out to the hardware. */
-    HWREGH(ulBase + USB_O_RXIE) &=
+    HWREGH(ulBase + USB_0_RXIE) &=
         ~((ulFlags & (USB_INTEP_HOST_IN | USB_INTEP_DEV_OUT)) >>
           USB_INTEP_RX_SHIFT);
 }
@@ -657,11 +657,11 @@ void USBIntEnableEndpoint(unsigned int ulBase, unsigned int ulFlags) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Enable any transmit endpoint interrupts. */
-    HWREGH(ulBase + USB_O_TXIE) |=
+    HWREGH(ulBase + USB_0_TXIE) |=
         ulFlags & (USB_INTEP_HOST_OUT | USB_INTEP_DEV_IN | USB_INTEP_0);
 
     /* Enable any receive endpoint interrupts. */
-    HWREGH(ulBase + USB_O_RXIE) |=
+    HWREGH(ulBase + USB_0_RXIE) |=
         ((ulFlags & (USB_INTEP_HOST_IN | USB_INTEP_DEV_OUT)) >>
          USB_INTEP_RX_SHIFT);
 }
@@ -690,9 +690,9 @@ unsigned int USBIntStatusEndpoint(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Get the transmit interrupt status. */
-    ulStatus = HWREGH(ulBase + USB_O_TXIS);
+    ulStatus = HWREGH(ulBase + USB_0_TXIS);
 
-    ulStatus |= (HWREGH(ulBase + USB_O_RXIS) << USB_INTEP_RX_SHIFT);
+    ulStatus |= (HWREGH(ulBase + USB_0_RXIS) << USB_INTEP_RX_SHIFT);
     /* Return the combined interrupt status. */
     return (ulStatus);
 }
@@ -849,10 +849,10 @@ unsigned int USBEndpointStatus(unsigned int ulBase, unsigned int ulEndpoint) {
            (ulEndpoint == USB_EP_14) || (ulEndpoint == USB_EP_15));
 
     /* Get the TX portion of the endpoint status. */
-    ulStatus = HWREGH(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXCSRL1);
+    ulStatus = HWREGH(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXCSRL1);
 
     /* Get the RX portion of the endpoint status. */
-    ulStatus |= ((HWREGH(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXCSRL1))
+    ulStatus |= ((HWREGH(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXCSRL1))
                  << USB_RX_EPSTATUS_SHIFT);
 
     /* Return the endpoint status. */
@@ -889,10 +889,10 @@ void USBHostEndpointStatusClear(unsigned int ulBase, unsigned int ulEndpoint,
 
     /* Clear the specified flags for the endpoint. */
     if (ulEndpoint == USB_EP_0) {
-        HWREGB(ulBase + USB_O_CSRL0) &= ~ulFlags;
+        HWREGB(ulBase + USB_0_CSRL0) &= ~ulFlags;
     } else {
-        HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) &= ~ulFlags;
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
+        HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) &= ~ulFlags;
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
             ~(ulFlags >> USB_RX_EPSTATUS_SHIFT);
     }
 }
@@ -930,28 +930,28 @@ void USBDevEndpointStatusClear(unsigned int ulBase, unsigned int ulEndpoint,
     if (ulEndpoint == USB_EP_0) {
         /* Set the Serviced RxPktRdy bit to clear the RxPktRdy. */
         if (ulFlags & USB_DEV_EP0_OUT_PKTRDY) {
-            HWREGB(ulBase + USB_O_CSRL0) |= USB_CSRL0_RXRDYC;
+            HWREGB(ulBase + USB_0_CSRL0) |= USB_CSRL0_RXRDYC;
         }
 
         /* Set the serviced Setup End bit to clear the SetupEnd status. */
         if (ulFlags & USB_DEV_EP0_SETUP_END) {
-            HWREGB(ulBase + USB_O_CSRL0) |= USB_CSRL0_SETENDC;
+            HWREGB(ulBase + USB_0_CSRL0) |= USB_CSRL0_SETENDC;
         }
 
         /* Clear the Sent Stall status flag. */
         if (ulFlags & USB_DEV_EP0_SENT_STALL) {
-            HWREGB(ulBase + USB_O_CSRL0) &= ~(USB_DEV_EP0_SENT_STALL);
+            HWREGB(ulBase + USB_0_CSRL0) &= ~(USB_DEV_EP0_SENT_STALL);
         }
     } else {
         /* Clear out any TX flags that were passed in.  Only
          * USB_DEV_TX_SENT_STALL and USB_DEV_TX_UNDERRUN should be cleared. */
-        HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) &=
+        HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) &=
             ~(ulFlags & (USB_DEV_TX_SENT_STALL | USB_DEV_TX_UNDERRUN));
 
         /* Clear out valid RX flags that were passed in.  Only
          * USB_DEV_RX_SENT_STALL, USB_DEV_RX_DATA_ERROR, and USB_DEV_RX_OVERRUN
          * should be cleared. */
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
             ~((ulFlags & (USB_DEV_RX_SENT_STALL | USB_DEV_RX_DATA_ERROR |
                           USB_DEV_RX_OVERRUN)) >>
               USB_RX_EPSTATUS_SHIFT);
@@ -1010,19 +1010,19 @@ void USBHostEndpointDataToggle(unsigned int ulBase, unsigned int ulEndpoint,
     /* Set the data toggle based on the endpoint. */
     if (ulEndpoint == USB_EP_0) {
         /* Set the write enable and the bit value for endpoint zero. */
-        HWREGB(ulBase + USB_O_CSRH0) =
-            ((HWREGB(ulBase + USB_O_CSRH0) & ~(USB_CSRH0_DTWE | USB_CSRH0_DT)) |
+        HWREGB(ulBase + USB_0_CSRH0) =
+            ((HWREGB(ulBase + USB_0_CSRH0) & ~(USB_CSRH0_DTWE | USB_CSRH0_DT)) |
              (ulDataToggle | USB_CSRH0_DTWE));
     } else if (ulFlags == USB_EP_HOST_IN) {
         /* Set the Write enable and the bit value for an IN endpoint. */
-        HWREGB(ulBase + USB_O_RXCSRH1 + EP_OFFSET(ulEndpoint)) =
-            ((HWREGB(ulBase + USB_O_RXCSRH1 + EP_OFFSET(ulEndpoint)) &
+        HWREGB(ulBase + USB_0_RXCSRH1 + EP_OFFSET(ulEndpoint)) =
+            ((HWREGB(ulBase + USB_0_RXCSRH1 + EP_OFFSET(ulEndpoint)) &
               ~(USB_RXCSRH1_DTWE | USB_RXCSRH1_DT)) |
              (ulDataToggle | USB_RXCSRH1_DTWE));
     } else {
         /* Set the Write enable and the bit value for an OUT endpoint. */
-        HWREGB(ulBase + USB_O_TXCSRH1 + EP_OFFSET(ulEndpoint)) =
-            ((HWREGB(ulBase + USB_O_TXCSRH1 + EP_OFFSET(ulEndpoint)) &
+        HWREGB(ulBase + USB_0_TXCSRH1 + EP_OFFSET(ulEndpoint)) =
+            ((HWREGB(ulBase + USB_0_TXCSRH1 + EP_OFFSET(ulEndpoint)) &
               ~(USB_TXCSRH1_DTWE | USB_TXCSRH1_DT)) |
              (ulDataToggle | USB_TXCSRH1_DTWE));
     }
@@ -1059,10 +1059,10 @@ void USBEndpointDataToggleClear(unsigned int ulBase, unsigned int ulEndpoint,
 
     /* See if the transmit or receive data toggle should be cleared. */
     if (ulFlags & (USB_EP_HOST_OUT | USB_EP_DEV_IN)) {
-        HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+        HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
             USB_TXCSRL1_CLRDT;
     } else {
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
             USB_RXCSRL1_CLRDT;
     }
 }
@@ -1101,14 +1101,14 @@ void USBDevEndpointStall(unsigned int ulBase, unsigned int ulEndpoint,
     /* Determine how to stall this endpoint. */
     if (ulEndpoint == USB_EP_0) {
         /* Perform a stall on endpoint zero. */
-        HWREGB(ulBase + USB_O_CSRL0) |= (USB_CSRL0_STALL | USB_CSRL0_RXRDYC);
+        HWREGB(ulBase + USB_0_CSRL0) |= (USB_CSRL0_STALL | USB_CSRL0_RXRDYC);
     } else if (ulFlags == USB_EP_DEV_IN) {
         /* Perform a stall on an IN endpoint. */
-        HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+        HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
             USB_TXCSRL1_STALL;
     } else {
         /* Perform a stall on an OUT endpoint. */
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
             USB_RXCSRL1_STALL;
     }
 }
@@ -1148,22 +1148,22 @@ void USBDevEndpointStallClear(unsigned int ulBase, unsigned int ulEndpoint,
     /* Determine how to clear the stall on this endpoint. */
     if (ulEndpoint == USB_EP_0) {
         /* Clear the stall on endpoint zero. */
-        HWREGB(ulBase + USB_O_CSRL0) &= ~USB_CSRL0_STALLED;
+        HWREGB(ulBase + USB_0_CSRL0) &= ~USB_CSRL0_STALLED;
     } else if (ulFlags == USB_EP_DEV_IN) {
         /* Clear the stall on an IN endpoint. */
-        HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) &=
+        HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) &=
             ~(USB_TXCSRL1_STALL | USB_TXCSRL1_STALLED);
 
         /* Reset the data toggle. */
-        HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+        HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
             USB_TXCSRL1_CLRDT;
     } else {
         /* Clear the stall on an OUT endpoint. */
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
             ~(USB_RXCSRL1_STALL | USB_RXCSRL1_STALLED);
 
         /* Reset the data toggle. */
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
             USB_RXCSRL1_CLRDT;
     }
 }
@@ -1185,7 +1185,7 @@ void USBDevConnect(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Enable connection to the USB bus. */
-    HWREGB(ulBase + USB_O_POWER) |= USB_POWER_SOFTCONN;
+    HWREGB(ulBase + USB_0_POWER) |= USB_POWER_SOFTCONN;
 }
 
 /**
@@ -1206,7 +1206,7 @@ void USBDevDisconnect(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Disable connection to the USB bus. */
-    HWREGB(ulBase + USB_O_POWER) &= (~USB_POWER_SOFTCONN);
+    HWREGB(ulBase + USB_0_POWER) &= (~USB_POWER_SOFTCONN);
 }
 
 /**
@@ -1227,7 +1227,7 @@ void USBDevAddrSet(unsigned int ulBase, unsigned int ulAddress) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Set the function address in the correct location. */
-    HWREGB(ulBase + USB_O_FADDR) = (unsigned char)ulAddress;
+    HWREGB(ulBase + USB_0_FADDR) = (unsigned char)ulAddress;
 }
 
 /**
@@ -1247,7 +1247,7 @@ unsigned int USBDevAddrGet(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Return the function address. */
-    return (HWREGB(ulBase + USB_O_FADDR));
+    return (HWREGB(ulBase + USB_0_FADDR));
 }
 
 /**
@@ -1341,17 +1341,17 @@ void USBHostEndpointConfig(unsigned int ulBase, unsigned int ulEndpoint,
      * if this is endpoint zero. */
     if (ulEndpoint == USB_EP_0) {
         /* Set the NAK timeout. */
-        HWREGB(ulBase + USB_O_NAKLMT) = ulNAKPollInterval;
+        HWREGB(ulBase + USB_0_NAKLMT) = ulNAKPollInterval;
 
         /* Set the transfer type information. */
         if (ulFlags & USB_EP_SPEED_HIGH) {
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TYPE0) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TYPE0) =
                 USB_TYPE0_SPEED_HIGH;
         } else if (ulFlags & USB_EP_SPEED_FULL) {
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TYPE0) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TYPE0) =
                 USB_TYPE0_SPEED_FULL;
         } else {
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TYPE0) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TYPE0) =
                 USB_TYPE0_SPEED_LOW;
         }
     } else {
@@ -1397,14 +1397,14 @@ void USBHostEndpointConfig(unsigned int ulBase, unsigned int ulEndpoint,
         /* See if the transmit or receive endpoint is being configured. */
         if (ulFlags & USB_EP_HOST_OUT) {
             /* Set the transfer type information. */
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXTYPE1) = ulRegister;
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXTYPE1) = ulRegister;
 
             /* Set the NAK timeout or polling interval. */
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXINTERVAL1) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXINTERVAL1) =
                 ulNAKPollInterval;
 
             /* Set the Maximum Payload per transaction. */
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXMAXP1) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXMAXP1) =
                 ulMaxPayload;
 
             /* Set the transmit control value to zero. */
@@ -1424,14 +1424,14 @@ void USBHostEndpointConfig(unsigned int ulBase, unsigned int ulEndpoint,
             }
 
             /* Write out the transmit control value. */
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXCSRH1) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXCSRH1) =
                 (unsigned char)ulRegister;
         } else {
             /* Set the transfer type information. */
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXTYPE1) = ulRegister;
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXTYPE1) = ulRegister;
 
             /* Set the NAK timeout or polling interval. */
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXINTERVAL1) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXINTERVAL1) =
                 ulNAKPollInterval;
 
             /* Set the receive control value to zero. */
@@ -1451,7 +1451,7 @@ void USBHostEndpointConfig(unsigned int ulBase, unsigned int ulEndpoint,
             }
 
             /* Write out the receive control value. */
-            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXCSRH1) =
+            HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXCSRH1) =
                 (unsigned char)ulRegister;
         }
     }
@@ -1522,7 +1522,7 @@ void USBDevEndpointConfigSet(unsigned int ulBase, unsigned int ulEndpoint,
     /* Determine if a transmit or receive endpoint is being configured. */
     if (ulFlags & USB_EP_DEV_IN) {
         /* Set the maximum packet size. */
-        HWREGH((ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXMAXP1)) =
+        HWREGH((ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXMAXP1)) =
             ulMaxPacketSize;
 
         /* The transmit control value is zero unless options are enabled. */
@@ -1548,15 +1548,15 @@ void USBDevEndpointConfigSet(unsigned int ulBase, unsigned int ulEndpoint,
         }
 
         /* Write the transmit control value. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXCSRH1) =
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXCSRH1) =
             (unsigned char)ulRegister;
 
         /* Reset the Data toggle to zero. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXCSRL1) =
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXCSRL1) =
             USB_TXCSRL1_CLRDT;
     } else {
         /* Set the MaxPacketSize. */
-        HWREGH((ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXMAXP1)) =
+        HWREGH((ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXMAXP1)) =
             ulMaxPacketSize;
 
         /* The receive control value is zero unless options are enabled. */
@@ -1581,11 +1581,11 @@ void USBDevEndpointConfigSet(unsigned int ulBase, unsigned int ulEndpoint,
         }
 
         /* Write the receive control value. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXCSRH1) =
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXCSRH1) =
             (unsigned char)ulRegister;
 
         /* Reset the Data toggle to zero. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXCSRL1) =
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXCSRL1) =
             USB_RXCSRL1_CLRDT;
     }
 }
@@ -1635,11 +1635,11 @@ void USBDevEndpointConfigGet(unsigned int ulBase, unsigned int ulEndpoint,
 
         /* Get the maximum packet size. */
         *pulMaxPacketSize = (unsigned int)HWREGH(
-            ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXMAXP1);
+            ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXMAXP1);
 
         /* Get the current transmit control register value. */
         ulRegister = (unsigned int)HWREGB(ulBase + EP_OFFSET(ulEndpoint) +
-                                          USB_O_TXCSRH1);
+                                          USB_0_TXCSRH1);
 
         /* Are we allowing auto setting of TxPktRdy when max packet size has
          * been loaded into the FIFO? */
@@ -1675,11 +1675,11 @@ void USBDevEndpointConfigGet(unsigned int ulBase, unsigned int ulEndpoint,
 
         /* Get the MaxPacketSize. */
         *pulMaxPacketSize = (unsigned int)HWREGH(
-            ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXMAXP1);
+            ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXMAXP1);
 
         /* Get the current receive control register value. */
         ulRegister = (unsigned int)HWREGB(ulBase + EP_OFFSET(ulEndpoint) +
-                                          USB_O_RXCSRH1);
+                                          USB_0_RXCSRH1);
 
         /* Are we allowing auto clearing of RxPktRdy when packet of size max
          * packet has been unloaded from the FIFO? */
@@ -1760,13 +1760,13 @@ void USBFIFOConfigSet(unsigned int ulBase, unsigned int ulEndpoint,
     /* See if the transmit or receive FIFO is being configured. */
     if (ulFlags & (USB_EP_HOST_OUT | USB_EP_DEV_IN)) {
         /* Set the transmit FIFO location and size for this endpoint. */
-        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_O_TXFIFOSZ, ulFIFOSize, 1);
-        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_O_TXFIFOADD,
+        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_0_TXFIFOSZ, ulFIFOSize, 1);
+        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_0_TXFIFOADD,
                       ulFIFOAddress >> 3, 2);
     } else {
         /* Set the receive FIFO location and size for this endpoint. */
-        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_O_RXFIFOSZ, ulFIFOSize, 1);
-        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_O_RXFIFOADD,
+        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_0_RXFIFOSZ, ulFIFOSize, 1);
+        USBIndexWrite(ulBase, ulEndpoint >> 4, USB_0_RXFIFOADD,
                       ulFIFOAddress >> 3, 2);
     }
 }
@@ -1810,18 +1810,18 @@ void USBFIFOConfigGet(unsigned int ulBase, unsigned int ulEndpoint,
     if (ulFlags & (USB_EP_HOST_OUT | USB_EP_DEV_IN)) {
         /* Get the transmit FIFO location and size for this endpoint. */
         *pulFIFOAddress = (USBIndexRead(ulBase, ulEndpoint >> 4,
-                                        (unsigned int)USB_O_TXFIFOADD, 2))
+                                        (unsigned int)USB_0_TXFIFOADD, 2))
                           << 3;
         *pulFIFOSize = USBIndexRead(ulBase, ulEndpoint >> 4,
-                                    (unsigned int)USB_O_TXFIFOSZ, 1);
+                                    (unsigned int)USB_0_TXFIFOSZ, 1);
 
     } else {
         /* Get the receive FIFO location and size for this endpoint. */
         *pulFIFOAddress = (USBIndexRead(ulBase, ulEndpoint >> 4,
-                                        (unsigned int)USB_O_RXFIFOADD, 2))
+                                        (unsigned int)USB_0_RXFIFOADD, 2))
                           << 3;
         *pulFIFOSize = USBIndexRead(ulBase, ulEndpoint >> 4,
-                                    (unsigned int)USB_O_RXFIFOSZ, 1);
+                                    (unsigned int)USB_0_RXFIFOSZ, 1);
     }
 }
 
@@ -1844,11 +1844,11 @@ void USBEndpointDMAEnable(unsigned int ulBase, unsigned int ulEndpoint,
     /* See if the transmit DMA is being enabled. */
     if (ulFlags & USB_EP_DEV_IN) {
         /* Enable DMA on the transmit end point. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXCSRH1) |=
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXCSRH1) |=
             USB_TXCSRH1_DMAEN;
     } else {
         /* Enable DMA on the receive end point. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXCSRH1) |=
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXCSRH1) |=
             USB_RXCSRH1_DMAEN;
     }
 }
@@ -1873,11 +1873,11 @@ void USBEndpointDMADisable(unsigned int ulBase, unsigned int ulEndpoint,
     /* then handle it. */
     if (ulFlags & USB_EP_DEV_IN) {
         /* Just disable DMA leave the mode setting. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_TXCSRH1) &=
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_TXCSRH1) &=
             ~USB_TXCSRH1_DMAEN;
     } else {
         /* Just disable DMA leave the mode setting. */
-        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_O_RXCSRH1) &=
+        HWREGB(ulBase + EP_OFFSET(ulEndpoint) + USB_0_RXCSRH1) &=
             ~USB_RXCSRH1_DMAEN;
     }
 }
@@ -1914,9 +1914,9 @@ unsigned int USBEndpointDataAvail(unsigned int ulBase,
     /* Get the address of the receive status register to use, based on the
      * endpoint. */
     if (ulEndpoint == USB_EP_0) {
-        ulRegister = USB_O_CSRL0;
+        ulRegister = USB_0_CSRL0;
     } else {
-        ulRegister = USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint);
+        ulRegister = USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint);
     }
 
     /* Is there a packet ready in the FIFO? */
@@ -1925,7 +1925,7 @@ unsigned int USBEndpointDataAvail(unsigned int ulBase,
     }
 
     /* Return the byte count in the FIFO. */
-    return (HWREGH(ulBase + USB_O_COUNT0 + ulEndpoint));
+    return (HWREGH(ulBase + USB_0_COUNT0 + ulEndpoint));
 }
 
 /**
@@ -1967,9 +1967,9 @@ int USBEndpointDataGet(unsigned int ulBase, unsigned int ulEndpoint,
     /* Get the address of the receive status register to use, based on the
      * endpoint. */
     if (ulEndpoint == USB_EP_0) {
-        ulRegister = USB_O_CSRL0;
+        ulRegister = USB_0_CSRL0;
     } else {
-        ulRegister = USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint);
+        ulRegister = USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint);
     }
 
     /* Don't allow reading of data if the RxPktRdy bit is not set. */
@@ -1982,7 +1982,7 @@ int USBEndpointDataGet(unsigned int ulBase, unsigned int ulEndpoint,
     }
 
     /* Get the byte count in the FIFO. */
-    ulByteCount = HWREGH(ulBase + USB_O_COUNT0 + ulEndpoint);
+    ulByteCount = HWREGH(ulBase + USB_0_COUNT0 + ulEndpoint);
 
     /* Determine how many bytes we will actually copy. */
     ulByteCount = (ulByteCount < *pulSize) ? ulByteCount : *pulSize;
@@ -1991,7 +1991,7 @@ int USBEndpointDataGet(unsigned int ulBase, unsigned int ulEndpoint,
     *pulSize = ulByteCount;
 
     /* Calculate the FIFO address. */
-    ulFIFO = ulBase + USB_O_FIFO0 + (ulEndpoint >> 2);
+    ulFIFO = ulBase + USB_0_FIFO0 + (ulEndpoint >> 2);
 
     /* Read the data out of the FIFO. */
     for (; ulByteCount > 0; ulByteCount--) {
@@ -2038,11 +2038,11 @@ void USBDevEndpointDataAck(unsigned int ulBase, unsigned int ulEndpoint,
     /* Determine which endpoint is being acked. */
     if (ulEndpoint == USB_EP_0) {
         /* Clear RxPktRdy, and optionally DataEnd, on endpoint zero. */
-        HWREGB(ulBase + USB_O_CSRL0) =
+        HWREGB(ulBase + USB_0_CSRL0) =
             USB_CSRL0_RXRDYC | (bIsLastPacket ? USB_CSRL0_DATAEND : 0);
     } else {
         /* Clear RxPktRdy on all other endpoints. */
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
             ~(USB_RXCSRL1_RXRDY);
     }
 }
@@ -2076,9 +2076,9 @@ void USBHostEndpointDataAck(unsigned int ulBase, unsigned int ulEndpoint) {
 
     /* Clear RxPktRdy. */
     if (ulEndpoint == USB_EP_0) {
-        HWREGB(ulBase + USB_O_CSRL0) &= ~USB_CSRL0_RXRDY;
+        HWREGB(ulBase + USB_0_CSRL0) &= ~USB_CSRL0_RXRDY;
     } else {
-        HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
+        HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) &=
             ~(USB_RXCSRL1_RXRDY);
     }
 }
@@ -2125,12 +2125,12 @@ int USBEndpointDataPut(unsigned int ulBase, unsigned int ulEndpoint,
     }
 
     /* Don't allow transmit of data if the TxPktRdy bit is already set. */
-    if (HWREGB(ulBase + USB_O_CSRL0 + ulEndpoint) & ucTxPktRdy) {
+    if (HWREGB(ulBase + USB_0_CSRL0 + ulEndpoint) & ucTxPktRdy) {
         return (-1);
     }
 
     /* Calculate the FIFO address. */
-    ulFIFO = ulBase + USB_O_FIFO0 + (ulEndpoint >> 2);
+    ulFIFO = ulBase + USB_0_FIFO0 + (ulEndpoint >> 2);
 
     /* Write the data to the FIFO. */
     for (; ulSize > 0; ulSize--) {
@@ -2187,12 +2187,12 @@ int USBEndpointDataSend(unsigned int ulBase, unsigned int ulEndpoint,
     }
 
     /* Don't allow transmit of data if the TxPktRdy bit is already set. */
-    if (HWREGB(ulBase + USB_O_CSRL0 + ulEndpoint) & USB_CSRL0_TXRDY) {
+    if (HWREGB(ulBase + USB_0_CSRL0 + ulEndpoint) & USB_CSRL0_TXRDY) {
         return (-1);
     }
 
     /* Set TxPktRdy in order to send the data. */
-    HWREGB(ulBase + USB_O_CSRL0 + ulEndpoint) = ulTxPktRdy;
+    HWREGB(ulBase + USB_0_CSRL0 + ulEndpoint) = ulTxPktRdy;
 
     /* Success. */
     return (0);
@@ -2228,27 +2228,27 @@ void USBFIFOFlush(unsigned int ulBase, unsigned int ulEndpoint,
     /* Endpoint zero has a different register set for FIFO flushing. */
     if (ulEndpoint == USB_EP_0) {
         /* Nothing in the FIFO if neither of these bits are set. */
-        if ((HWREGB(ulBase + USB_O_CSRL0) &
+        if ((HWREGB(ulBase + USB_0_CSRL0) &
              (USB_CSRL0_RXRDY | USB_CSRL0_TXRDY)) != 0) {
             /* Hit the Flush FIFO bit. */
-            HWREGB(ulBase + USB_O_CSRH0) = USB_CSRH0_FLUSH;
+            HWREGB(ulBase + USB_0_CSRH0) = USB_CSRH0_FLUSH;
         }
     } else {
         /* Only reset the IN or OUT FIFO. */
         if (ulFlags & (USB_EP_HOST_OUT | USB_EP_DEV_IN)) {
             /* Make sure the FIFO is not empty. */
-            if (HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) &
+            if (HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) &
                 USB_TXCSRL1_TXRDY) {
                 /* Hit the Flush FIFO bit. */
-                HWREGB(ulBase + USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+                HWREGB(ulBase + USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint)) |=
                     USB_TXCSRL1_FLUSH;
             }
         } else {
             /* Make sure that the FIFO is not empty. */
-            if (HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) &
+            if (HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) &
                 USB_RXCSRL1_RXRDY) {
                 /* Hit the Flush FIFO bit. */
-                HWREGB(ulBase + USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
+                HWREGB(ulBase + USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint)) |=
                     USB_RXCSRL1_FLUSH;
             }
         }
@@ -2285,9 +2285,9 @@ void USBHostRequestIN(unsigned int ulBase, unsigned int ulEndpoint) {
 
     /* Endpoint zero uses a different offset than the other endpoints. */
     if (ulEndpoint == USB_EP_0) {
-        ulRegister = USB_O_CSRL0;
+        ulRegister = USB_0_CSRL0;
     } else {
-        ulRegister = USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint);
+        ulRegister = USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint);
     }
 
     /* Set the request for an IN transaction. */
@@ -2312,7 +2312,7 @@ void USBHostRequestStatus(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Set the request for a status IN transaction. */
-    HWREGB(ulBase + USB_O_CSRL0) = USB_CSRL0_REQPKT | USB_CSRL0_STATUS;
+    HWREGB(ulBase + USB_0_CSRL0) = USB_CSRL0_REQPKT | USB_CSRL0_STATUS;
 }
 
 /**
@@ -2350,10 +2350,10 @@ void USBHostAddrSet(unsigned int ulBase, unsigned int ulEndpoint,
     /* See if the transmit or receive address should be set. */
     if (ulFlags & USB_EP_HOST_OUT) {
         /* Set the transmit address. */
-        HWREGB(ulBase + USB_O_TXFUNCADDR0 + (ulEndpoint >> 1)) = ulAddr;
+        HWREGB(ulBase + USB_0_TXFUNCADDR0 + (ulEndpoint >> 1)) = ulAddr;
     } else {
         /* Set the receive address. */
-        HWREGB(ulBase + USB_O_TXFUNCADDR0 + 4 + (ulEndpoint >> 1)) = ulAddr;
+        HWREGB(ulBase + USB_0_TXFUNCADDR0 + 4 + (ulEndpoint >> 1)) = ulAddr;
     }
 }
 
@@ -2388,10 +2388,10 @@ unsigned int USBHostAddrGet(unsigned int ulBase, unsigned int ulEndpoint,
     /* See if the transmit or receive address should be returned. */
     if (ulFlags & USB_EP_HOST_OUT) {
         /* Return this endpoint's transmit address. */
-        return (HWREGB(ulBase + USB_O_TXFUNCADDR0 + (ulEndpoint >> 1)));
+        return (HWREGB(ulBase + USB_0_TXFUNCADDR0 + (ulEndpoint >> 1)));
     } else {
         /* Return this endpoint's receive address. */
-        return (HWREGB(ulBase + USB_O_TXFUNCADDR0 + 4 + (ulEndpoint >> 1)));
+        return (HWREGB(ulBase + USB_0_TXFUNCADDR0 + 4 + (ulEndpoint >> 1)));
     }
 }
 
@@ -2427,10 +2427,10 @@ void USBHostHubAddrSet(unsigned int ulBase, unsigned int ulEndpoint,
     /* See if the hub transmit or receive address is being set. */
     if (ulFlags & USB_EP_HOST_OUT) {
         /* Set the hub transmit address for this endpoint. */
-        HWREGB(ulBase + USB_O_TXHUBADDR0 + (ulEndpoint >> 1)) = ulAddr;
+        HWREGB(ulBase + USB_0_TXHUBADDR0 + (ulEndpoint >> 1)) = ulAddr;
     } else {
         /* Set the hub receive address for this endpoint. */
-        HWREGB(ulBase + USB_O_TXHUBADDR0 + 4 + (ulEndpoint >> 1)) = ulAddr;
+        HWREGB(ulBase + USB_0_TXHUBADDR0 + 4 + (ulEndpoint >> 1)) = ulAddr;
     }
 }
 
@@ -2466,10 +2466,10 @@ unsigned int USBHostHubAddrGet(unsigned int ulBase, unsigned int ulEndpoint,
     /* See if the hub transmit or receive address should be returned. */
     if (ulFlags & USB_EP_HOST_OUT) {
         /* Return the hub transmit address for this endpoint. */
-        return (HWREGB(ulBase + USB_O_TXHUBADDR0 + (ulEndpoint >> 1)));
+        return (HWREGB(ulBase + USB_0_TXHUBADDR0 + (ulEndpoint >> 1)));
     } else {
         /* Return the hub receive address for this endpoint. */
-        return (HWREGB(ulBase + USB_O_TXHUBADDR0 + 4 + (ulEndpoint >> 1)));
+        return (HWREGB(ulBase + USB_0_TXHUBADDR0 + 4 + (ulEndpoint >> 1)));
     }
 }
 
@@ -2545,12 +2545,12 @@ void USBHostPwrConfig(unsigned int ulBase, unsigned int ulFlags) {
 
     /* If requested, enable VBUS droop detection on parts that support this
      * feature. */
-    HWREG(ulBase + USB_O_VDC) = ulFlags >> 16;
+    HWREG(ulBase + USB_0_VDC) = ulFlags >> 16;
 
     /* Set the power fault configuration as specified.  This will not change
      * whether fault detection is enabled or not. */
-    HWREGH(ulBase + USB_O_EPC) =
-        (ulFlags | (HWREGH(ulBase + USB_O_EPC) &
+    HWREGH(ulBase + USB_0_EPC) =
+        (ulFlags | (HWREGH(ulBase + USB_0_EPC) &
                     ~(USB_EPC_PFLTACT_M | USB_EPC_PFLTAEN |
                       USB_EPC_PFLTSEN_HIGH | USB_EPC_EPEN_M)));
 }
@@ -2572,7 +2572,7 @@ void USBHostPwrFaultEnable(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Enable power fault input. */
-    HWREGH(ulBase + USB_O_EPC) |= USB_EPC_PFLTEN;
+    HWREGH(ulBase + USB_0_EPC) |= USB_EPC_PFLTEN;
 }
 
 /**
@@ -2591,7 +2591,7 @@ void USBHostPwrFaultDisable(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Enable power fault input. */
-    HWREGH(ulBase + USB_O_EPC) &= ~USB_EPC_PFLTEN;
+    HWREGH(ulBase + USB_0_EPC) &= ~USB_EPC_PFLTEN;
 }
 
 /**
@@ -2611,7 +2611,7 @@ void USBHostPwrEnable(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Enable the external power suppply enable signal. */
-    HWREGH(ulBase + USB_O_EPC) |= USB_EPC_EPENDE;
+    HWREGH(ulBase + USB_0_EPC) |= USB_EPC_EPENDE;
 }
 
 /**
@@ -2631,7 +2631,7 @@ void USBHostPwrDisable(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Disable the external power supply enable signal. */
-    HWREGH(ulBase + USB_O_EPC) &= ~USB_EPC_EPENDE;
+    HWREGH(ulBase + USB_0_EPC) &= ~USB_EPC_EPENDE;
 }
 
 /**
@@ -2648,7 +2648,7 @@ unsigned int USBFrameNumberGet(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Return the most recent frame number. */
-    return (HWREGH(ulBase + USB_O_FRAME));
+    return (HWREGH(ulBase + USB_0_FRAME));
 }
 
 /**
@@ -2669,9 +2669,9 @@ void USBOTGSessionRequest(unsigned int ulBase, tBoolean bStart) {
 
     /* Start or end the session as directed. */
     if (bStart) {
-        HWREGB(ulBase + USB_O_DEVCTL) |= USB_DEVCTL_SESSION;
+        HWREGB(ulBase + USB_0_DEVCTL) |= USB_DEVCTL_SESSION;
     } else {
-        HWREGB(ulBase + USB_O_DEVCTL) &= ~USB_DEVCTL_SESSION;
+        HWREGB(ulBase + USB_0_DEVCTL) &= ~USB_DEVCTL_SESSION;
     }
 }
 
@@ -2690,7 +2690,7 @@ void USBOTGSessionRequest(unsigned int ulBase, tBoolean bStart) {
  */
 unsigned int USBFIFOAddrGet(unsigned int ulBase, unsigned int ulEndpoint) {
     /* Return the FIFO address for this endpoint. */
-    return (ulBase + USB_O_FIFO0 + (ulEndpoint >> 2));
+    return (ulBase + USB_0_FIFO0 + (ulEndpoint >> 2));
 }
 
 /**
@@ -2746,7 +2746,7 @@ unsigned int USBModeGet(unsigned int ulBase) {
     /* Check the arguments. */
     ASSERT(ulBase == USB0_BASE);
 
-    /* Checks the current mode in the USB_O_DEVCTL and returns the current
+    /* Checks the current mode in the USB_0_DEVCTL and returns the current
      * mode.
      * USB_OTG_MODE_ASIDE_HOST:  USB_DEVCTL_HOST | USB_DEVCTL_SESSION
      * USB_OTG_MODE_ASIDE_DEV:   USB_DEVCTL_SESSION
@@ -2754,7 +2754,7 @@ unsigned int USBModeGet(unsigned int ulBase) {
      *                           USB_DEVCTL_HOST
      * USB_OTG_MODE_BSIDE_DEV:   USB_DEVCTL_DEV | USB_DEVCTL_SESSION
      * USB_OTG_MODE_NONE:        USB_DEVCTL_DEV */
-    return (HWREGB(ulBase + USB_O_DEVCTL) &
+    return (HWREGB(ulBase + USB_0_DEVCTL) &
             (USB_DEVCTL_DEV | USB_DEVCTL_HOST | USB_DEVCTL_SESSION |
              USB_DEVCTL_VBUS_M));
 }
@@ -2802,14 +2802,14 @@ void USBEndpointDMAChannel(unsigned int ulBase, unsigned int ulEndpoint,
     ulMask = 0xf << (ulChannel * 4);
 
     /* Clear out the current selection for the channel. */
-    ulMask = HWREG(ulBase + USB_O_DMASEL) & (~ulMask);
+    ulMask = HWREG(ulBase + USB_0_DMASEL) & (~ulMask);
 
     /* The input select is now shifted into the correct position based on the
      * channel. */
     ulMask |= (USB_EP_TO_INDEX(ulEndpoint)) << (ulChannel * 4);
 
     /* Write the value out to the register. */
-    HWREG(ulBase + USB_O_DMASEL) = ulMask;
+    HWREG(ulBase + USB_0_DMASEL) = ulMask;
 }
 
 /**
@@ -2828,7 +2828,7 @@ void USBHostMode(unsigned int ulBase) {
     ASSERT(ulBase == USB0_BASE);
 
     /* Set the USB controller mode to host. */
-    HWREGB(ulBase + USB_O_GPCS) &= ~(USB_GPCS_DEVMOD);
+    HWREGB(ulBase + USB_0_GPCS) &= ~(USB_GPCS_DEVMOD);
 }
 
 /**

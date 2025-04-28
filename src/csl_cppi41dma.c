@@ -376,7 +376,7 @@ void enableCoreTxDMA(unsigned short usbDevInst, unsigned int ulEndpoint) {
     usbInstance = &(cppiInfo.usbInst[usbDevInst]);
 
     /*Find out the TX CRS address */
-    ulRegister = USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint);
+    ulRegister = USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint);
 
     /*Wait till completion of any previous transaction */
     while ((HWREGH(usbInstance->usbBaseAddress + ulRegister) & 0x2) == 0x02)
@@ -408,7 +408,7 @@ void enableCoreRxDMA(unsigned short usbDevInst, unsigned int ulEndpoint) {
     usbInstance = &(cppiInfo.usbInst[usbDevInst]);
 
     /*Find out the RX CSR  address */
-    ulRegister = USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint);
+    ulRegister = USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint);
 
     /*Find out the index to usb intance end point array */
     ulEndpoint = USB_EP_TO_INDEX(ulEndpoint);
@@ -448,7 +448,7 @@ void disableCoreRxDMA(unsigned short usbDevInst, unsigned int ulEndpoint) {
     usbInstance = &(cppiInfo.usbInst[usbDevInst]);
 
     /*Find out the CSR offset */
-    ulRegister = USB_O_RXCSRL1 + EP_OFFSET(ulEndpoint);
+    ulRegister = USB_0_RXCSRL1 + EP_OFFSET(ulEndpoint);
 
     /*wait till completion of any previos transaction */
     while ((HWREGH(usbInstance->usbBaseAddress + ulRegister) & 0x1) == 0x01)
@@ -476,7 +476,7 @@ void disableCoreTxDMA(unsigned short usbDevInst, unsigned int ulEndpoint) {
 
     usbInstance = &(cppiInfo.usbInst[usbDevInst]);
 
-    ulRegister = USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint);
+    ulRegister = USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint);
     while ((HWREGH(usbInstance->usbBaseAddress + ulRegister) & 0x2) == 0x02)
         ;
 
@@ -1045,7 +1045,7 @@ unsigned int dmaTxCompletion(unsigned short usbDevInst,
 
     usbInstance = &(cppiInfo.usbInst[usbDevInst]);
 
-    ulRegister = USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint);
+    ulRegister = USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint);
 
     ulEndpoint = USB_EP_TO_INDEX(ulEndpoint);
 
@@ -1088,7 +1088,7 @@ unsigned int dmaTxCompletion(unsigned short usbDevInst,
 
     usbInstance = &(cppiInfo.usbInst[usbDevInst]);
 
-    ulRegister = USB_O_TXCSRL1 + EP_OFFSET(ulEndpoint);
+    ulRegister = USB_0_TXCSRL1 + EP_OFFSET(ulEndpoint);
 
     ulEndpoint = USB_EP_TO_INDEX(ulEndpoint);
 

@@ -72,7 +72,7 @@ void UsbPhyOn() {
     reg |= CFGCHIP2_PHY_PLLON;
 
 #ifdef USB_MODE_HS_DISABLE
-    HWREGB(USB0_BASE + USB_O_POWER) &= 0xdf;
+    HWREGB(USB0_BASE + USB_0_POWER) &= 0xdf;
 #endif /* USB_MODE_HS_DISABLE  */
 
     HWREG(CFGCHIP2_USBPHYCTRL) = reg;

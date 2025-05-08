@@ -61,8 +61,12 @@ extern void CP15MMUEnable(void);
 extern void CP15ICacheFlushBuff(unsigned int ptr, unsigned int size);
 extern void CP15DCacheCleanBuff(unsigned int bufPtr, unsigned int size);
 extern void CP15HighVectorEnable(void);
+extern void CP15HighVectorDisable(void);
+extern void CP15DomainAccessClient(void);
+extern void CP15DomainAccessManager(void);
+extern void CP15InvalidateTLB(void);
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* __CP15_H__ */
+#endif /* CSL_CP15_H */

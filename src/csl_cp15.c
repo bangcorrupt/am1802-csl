@@ -207,18 +207,19 @@ void CP15DCacheCleanBuff(unsigned int bufPtr, unsigned int size) {
  **/
 void CP15TtbSet(unsigned int ttb) {
 
-    /// TODO: Move this to separate function and parameterise.
+    /// TODO: Test and remove. Moved to separate functions below.
+    //
     /* Invalidates all TLBs.Domain access is selected as
      * client by configuring domain access register,
      * in that case access controlled by permission value
      * set by page table entry
      */
-    asm("   mov r1, #0\n\t"
-        "   mcr p15, #0, r1, c8, c7, #0\n\t"
-        "   ldr r1, =0x55555555\n\t"
-        "   mcr p15, #0, r1, c3, c0, #0\n\t");
+    // asm("   mov r1, #0\n\t"
+    //     "   mcr p15, #0, r1, c8, c7, #0\n\t"
+    //     "   ldr r1, =0x55555555\n\t"
+    //     "   mcr p15, #0, r1, c3, c0, #0\n\t");
 
-    /* sets translation table base resgister with page table
+    /* sets translation table base register with page table
      * starting address.
      */
     asm("   mcr p15, #0, %[value], c2, c0, 0" ::[value] "r"(ttb));
@@ -267,6 +268,62 @@ void CP15HighVectorEnable(void) {
     asm("    mrc     p15, #0, r0, c1, c0, #0\n\t"
         "    orr     r0,  r0, #0x00002000 \n\t"
         "    mcr     p15, #0, r0, c1, c0, #0 \n\t");
+}
+
+/**
+ * \brief      This API sets the exception vector to low address at 0x00000000.
+ *
+ * \param      None.
+ *
+ * \return     None.
+ *
+ **/
+void CP15HighVectorDisable(void) {
+    asm("    mrc     p15, #0, r0, c1, c0, #0\n\t"
+        "    bic     r0,  r0, #0x00002000\n\t"
+        "    mcr     p15, #0, r0, c1, c0, #0 \n\t");
+}
+
+/**
+ * \brief      This API sets all domains to client mode.
+ *
+ * \param      None.
+ *
+ * \return     None.
+ *
+ **/
+void CP15DomainAccessClient(void) {
+
+    asm("   ldr r1, =0x55555555\n\t"
+        "   mcr p15, #0, r1, c3, c0, #0\n\t");
+}
+
+/**
+ * \brief      This API sets all domains to manager mode.
+ *
+ * \param      None.
+ *
+ * \return     None.
+ *
+ **/
+void CP15DomainAccessManager(void) {
+
+    asm("   ldr r1, =0x33333333\n\t"
+        "   mcr p15, #0, r1, c3, c0, #0\n\t");
+}
+
+/**
+ * \brief      This API Invalidates the set associative TLB.
+ *
+ * \param      None.
+ *
+ * \return     None.
+ *
+ **/
+void CP15InvalidateTLB(void) {
+
+    asm("   mov r1, #0\n\t"
+        "   mcr p15, #0, r1, c8, c7, #0\n\t");
 }
 
 /********************************* End Of File *******************************/
